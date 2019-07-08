@@ -2,9 +2,11 @@ FROM heroku/heroku:18
 
 ARG VIPS_VERSION
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 # useful build tools ... we need gtk-doc to build orc, since they don't ship
 # pre-baked tarballs
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y -qq \
 	build-essential \
 	autoconf \
 	automake \
@@ -22,7 +24,7 @@ RUN apt-get update && apt-get install -y \
 # see https://devcenter.heroku.com/articles/stack-packages
 #
 # libgsf needs libxml2
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y -qq \
 	glib-2.0-dev \
 	libexpat-dev \
 	librsvg2-dev \

@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y -qq \
 	build-essential \
 	autoconf \
 	automake \
+  cmake \
 	libtool \
 	intltool \
 	gtk-doc-tools \
@@ -35,7 +36,9 @@ RUN apt-get update && apt-get install -y -qq \
 	liblcms2-dev \
 	libxml2-dev \
 	libfftw3-dev \
-  libpoppler-glib-dev
+  libpoppler-glib-dev \
+  libopenjp2-7-dev \
+  libgdk-pixbuf2.0-dev
 
 ARG GIFLIB_VERSION=5.1.4
 ARG GIFLIB_URL=http://downloads.sourceforge.net/project/giflib
@@ -68,6 +71,20 @@ RUN cd /usr/src \
 	&& tar xf libgsf-${GSF_VERSION}.tar.xz \
 	&& cd libgsf-${GSF_VERSION} \
 	&& ./configure --prefix=/usr/src/vips --disable-gtk-doc \
+	&& make \
+	&& make install
+
+ARG POPPLER_VERSION=0.78.0
+ARG POPPLER_URL=https://poppler.freedesktop.org/poppler-0.78.0.tar.xz
+
+RUN cd /usr/src \
+	&& wget ${POPPLER_URL} \
+	&& tar vxf poppler-${POPPLER_VERSION}.tar.xz \
+	&& cd poppler-${POPPLER_VERSION} \
+	&& export PKG_CONFIG_PATH=/usr/src/vips/lib/pkgconfig \
+  && mkdir build \
+  && cd build \
+	&& cmake .. -DCMAKE_INSTALL_PREFIX=/usr/src/vips \
 	&& make \
 	&& make install
 
